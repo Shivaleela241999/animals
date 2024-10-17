@@ -1,4 +1,6 @@
 dog
 cat
 parrot
+peacock
+pegion
 

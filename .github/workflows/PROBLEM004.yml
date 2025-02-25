@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate inputs
         run: |
-          if [ -z "${{DB_NAME}}" ]; then
+          if [ -z "${DB_NAME} ]; then
             echo "database name not provided"
             exit 1
           fi

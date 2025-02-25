@@ -12,14 +12,14 @@ on:
         required: true
         type: choice
         options:
-            - full
-            - incremental
+          - full
+          - incremental
 jobs:
   validate:
     runs-on: ubuntu-latest
     env:
       DB_NAME: ${{ github.event.inputs.database }}
-      BACKUP_TYPE: ${{ github.event.inputs['backup-type']}}
+      BACKUP_TYPE: ${{ github.event.inputs['backup_type']}}
     steps:
       - uses: actions/checkout@v4
       - name: Validate inputs

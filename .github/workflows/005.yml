@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Debug -List files
+        run: ls -R
+        
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -19,6 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: ./CRM-Sandbox
 
       - name: Check outdated packages
         run: npm outdated > outdated-packages.txt

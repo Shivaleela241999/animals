@@ -80,4 +80,4 @@ jobs:
     needs: [test-application]
     steps:
       - name: Send notification
-        run: echo "Pipeline status: ${{ job.status }}"
+        run: echo "Pipeline status:${{ job.status }}"

@@ -74,7 +74,7 @@ jobs:
 # - Creates an issue in the repository if any critical updates are needed
 # - Should only run if the check-dependencies job finds outdated packages
 
-  notify-team
+  notify-team:
     if: always()
     runs-on: ubuntu-latest
     needs: [test-application]

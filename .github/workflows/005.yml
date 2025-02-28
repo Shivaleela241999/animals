@@ -1,0 +1,77 @@
+name: Problem 005 Workflow
+
+# This workflow should run on manual trigger and also every Monday at 9am UTC
+on:
+  workflow-dispatch:
+  schedule
+    - cron: '0 9 * * 1
+
+jobs:
+  check-dependencies
+    run-on: ubuntu-latest
+    steps:
+      - uses: action/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with
+          node-version: 16
+
+      - names: Install dependencies
+        run: npm install
+
+      - name: Check outdated packages
+        run: npm outdated
+
+  report_outdated_dependencies:
+    runs-on: ubuntu-latest
+    needs: [check_dependencies]
+    if: success()
+    steps:
+      - name: Download Outdated Packages Report
+        uses: actions/download-artifact@v3
+        with:
+          name: outdated-packages
+ 
+      - name: Create Markdown Report
+        run: |
+echo "# Outdated Dependencies Report" > report.md
+cat outdated-packages.txt >> report.md
+ 
+      - name: Upload Markdown Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: outdated-dependencies-report
+path: report.md
+ 
+      - name: Create Issue if Critical Updates Needed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if grep -q 'major' outdated-packages.txt; then
+gh issue create --title "Critical Dependency Updates Required" --body "$(cat report.md)"
+          fi
+  
+  test-application:
+    runs-on: ubuntu-latest
+    needs: [check-dependencies]
+    steps:
+      - name: Run tests
+        run: |
+          npm run test
+          npm run lint
+
+# A job should be added here that:
+# - Generates a report of the outdated dependencies
+# - Creates a markdown file with the list of outdated packages
+# - Uploads this report as an artifact
+# - Creates an issue in the repository if any critical updates are needed
+# - Should only run if the check-dependencies job finds outdated packages
+
+  notify-team
+    if: always()
+    runs-on: ubuntu-latest
+    needs: [test-application]
+    steps:
+      - name Send notification
+        run: echo "Pipeline status: ${{ jobs.status }}"

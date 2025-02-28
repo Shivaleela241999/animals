@@ -2,7 +2,7 @@ name: Problem 005 Workflow
 
 # This workflow should run on manual trigger and also every Monday at 9am UTC
 on:
-  workflow-dispatch:
+  workflow_dispatch:
   schedule:
     - cron: '0 9 * * 1'
 

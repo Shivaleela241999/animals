@@ -24,7 +24,7 @@ jobs:
         run: npm outdated > outdated-packages.txt
 
       - name: upload outdated packages report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with: 
           name: outdated-packages
           path: outdated-package.txt

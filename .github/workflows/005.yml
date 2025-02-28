@@ -3,8 +3,8 @@ name: Problem 005 Workflow
 # This workflow should run on manual trigger and also every Monday at 9am UTC
 on:
   workflow-dispatch:
-  schedule
-    - cron: '0 9 * * 1
+  schedule:
+    - cron: '0 9 * * 1"
 
 jobs:
   check-dependencies
@@ -21,7 +21,13 @@ jobs:
         run: npm install
 
       - name: Check outdated packages
-        run: npm outdated
+        run: npm outdated > outdated-packages.txt
+
+      - name: upload outdated packages report
+        uses: actions/upload-artifact@v3
+        with: 
+          name:outdated-packages
+          path:outdated-package.txt
 
   report_outdated_dependencies:
     runs-on: ubuntu-latest
@@ -35,21 +41,21 @@ jobs:
  
       - name: Create Markdown Report
         run: |
-echo "# Outdated Dependencies Report" > report.md
-cat outdated-packages.txt >> report.md
+          echo "# Outdated Dependencies Report" > report.md
+          cat outdated-packages.txt >> report.md
  
       - name: Upload Markdown Report
         uses: actions/upload-artifact@v3
         with:
           name: outdated-dependencies-report
-path: report.md
+          path: report.md
  
       - name: Create Issue if Critical Updates Needed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if grep -q 'major' outdated-packages.txt; then
-gh issue create --title "Critical Dependency Updates Required" --body "$(cat report.md)"
+              gh issue create --title "Critical Dependency Updates Required" --body "$(cat outdated-packages.txt)"|| echo "issue creation failed" 
           fi
   
   test-application:

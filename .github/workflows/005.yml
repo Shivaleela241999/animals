@@ -26,12 +26,12 @@ jobs:
       - name: upload outdated packages report
         uses: actions/upload-artifact@v3
         with: 
-          name:outdated-packages
-          path:outdated-package.txt
+          name: outdated-packages
+          path: outdated-package.txt
 
   report_outdated_dependencies:
     runs-on: ubuntu-latest
-    needs: [check_dependencies]
+    needs: [check-dependencies]
     if: success()
     steps:
       - name: Download Outdated Packages Report

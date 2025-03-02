@@ -14,6 +14,9 @@ jobs:
       - name: working directory
         run: pwd
 
+      - name: Ensure CRM-Sandbox exists
+        run: mkdir -p CRM-Sandbox
+
 
       - name: Debug -List files
         run: ls -R

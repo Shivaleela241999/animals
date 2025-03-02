@@ -13,11 +13,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: working directory
         run: pwd
-
-      - name: Ensure CRM-Sandbox exists
-        run: mkdir -p CRM-Sandbox
-
-
+     
       - name: Debug -List files
         run: ls -R
         working-directory: ./CRM-Sandbox
@@ -28,7 +24,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
         working-directory: ./CRM-Sandbox
 
       - name: Check outdated packages

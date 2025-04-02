@@ -25,6 +25,6 @@ jobs:
         run: python get_api_version.py
 
       - name: save python script output
-        run: python getversion.py>output.log      
+        run: python apiversion.py>output.log      
 
     

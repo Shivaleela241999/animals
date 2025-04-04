@@ -17,5 +17,5 @@ jobs:
           python-version: '3.12'
       
       - name: Execute Python script
-        run: cd /home/runner/work/animals/animals && python get_api_version.py
+        run: cd /home/runner/work/animals/animals && python api_version.py
        

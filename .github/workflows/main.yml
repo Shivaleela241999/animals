@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: verify script existence
-        run: ls -l .github.workflows/
+        run: ls -l animals/.github.workflows/
 
       - name: Set up Python
         uses: actions/setup-python@v4

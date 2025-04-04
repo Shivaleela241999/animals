@@ -1,0 +1,21 @@
+name: Run python script
+on: [push]
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: verify script existence
+        run: ls -l animals/.github.workflows/
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Execute Python script
+        run: python animals/.github/workflows/get_api_version.py
+       

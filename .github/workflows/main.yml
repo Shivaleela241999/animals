@@ -17,5 +17,5 @@ jobs:
           python-version: '3.12'
       
       - name: Execute Python script
-        run: python .github/workflows/get_api_version.py
+        run: python animals/.github/workflows/get_api_version.py
        

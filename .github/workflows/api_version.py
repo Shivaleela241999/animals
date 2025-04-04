@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
-import os
 import re
 import sys
  
 # Define the allowed API version range
 MIN_VERSION = 1.0
 MAX_VERSION = 2.0
-API_FILE = os.path.join(os.getenv("GITHUB_WORKSPACE",""),"main.yml")   
+API_FILE = "main.yml"
 
 # File where API version is defined
 def get_api_version():

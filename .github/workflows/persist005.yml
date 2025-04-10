@@ -1,0 +1,90 @@
+name: Problem 005 Workflow
+
+# This workflow should run on manual trigger and also every Monday at 9am UTC
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 1'
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Debug -List files
+        run: ls -R
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: ensure package.json exist
+        run: |
+          if [ ! -f package.json ]; then 
+            echo "package.json is missing. creating a default one..."
+            npm init -y
+          fi
+      - name: Install dependencies
+        run: npm install
+
+      - name: list installed packages
+        run: npm list 
+          
+      - name: Check outdated packages
+        run: npm outdated > outdated-packages.txt
+
+      - name: upload outdated packages report
+        uses: actions/upload-artifact@v4
+        with: 
+          name: outdated-packages
+          path: outdated-packages.txt
+
+  report_outdated_dependencies:
+    runs-on: ubuntu-latest
+    needs: [check-dependencies]
+    if: success()
+    steps:
+      - name: Download Outdated Packages Report
+        uses: actions/download-artifact@v4
+        with:
+          name: outdated-packages
+          path: ./
+          run-id: ${{ needs.check-dependencies.output.run_id }}
+ 
+      - name: Create Markdown Report
+        run: |
+          echo "# Outdated Dependencies Report" > report.md
+          cat outdated-packages.txt >> report.md
+ 
+      - name: Upload Markdown Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdated-dependencies-report
+          path: report.md
+ 
+      - name: Create Issue if Critical Updates Needed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if grep -q "major" outdated-packages.txt; then
+            BODY=(sed 's/"/\\"/g' outdated-packages.txt )
+              gh issue create --title "Critical Dependency Updates Required" --body "$BODY"
+          fi
+  
+# A job should be added here that:
+# - Generates a report of the outdated dependencies
+# - Creates a markdown file with the list of outdated packages
+# - Uploads this report as an artifact
+# - Creates an issue in the repository if any critical updates are needed
+# - Should only run if the check-dependencies job finds outdated packages
+
+  notify-team:
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        run: echo "Pipeline status:${{ job.status }}"
